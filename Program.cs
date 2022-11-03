@@ -158,6 +158,14 @@ namespace Program
             clear_and_reset_color();
             do
             {
+                if (setting_rows > menu.properties.Count+1)
+                {
+                    menu_display[0] = header;
+                    for (int i = 1; i < menu.properties.Count; i++)
+                    {
+                        menu_display[i] = menu.properties[i];
+                    }
+                }
                 //selection bounds
                 if (line < selection_start)
                 {
@@ -178,17 +186,15 @@ namespace Program
                     }
                 }
                 //display
-                for (int i = selection_start; i < setting_rows + selection_start; i++)
+                for (int i = 0; i < setting_rows; i++)
                 {
-                    if (i == line)
+                    if (i == line - selection_start)
                     {
-                        Write(ConsoleColorExtension.colors["selected"], ((Iname)menu_display[i]).name, ConsoleColorExtension.colors["default"]);
+                        Write(ConsoleColorExtension.colors["selected"]);
                     }
-                    else
-                    {
-                        //make this function display containers
-                        Write(((Iname)menu_display[i]).name);
-                    }
+                    // if (((Displayable)menu_display[i+selection_start]).classes is )
+                    //make this function display containers
+                    Write(((Iname)menu_display[i]).name, ConsoleColorExtension.colors["default"], "\n");
                 }
                 //controlling
                 keyInfo = Console.ReadKey(true);
@@ -216,7 +222,22 @@ namespace Program
                 }
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    if (menu.properties![line] is Displayable)
+                    // if class is menu then the default action is to display the menu
+                    // if class not menu then the default action is to call the edit or add function
+                    if (menu.properties![line] is not Displayable)
+                    { 
+                        Edit_or_Add_more_data(menu.properties![line]);
+                    }
+                    if (((Displayable)menu.properties![line]).called != null)
+                    {
+                        menu_call_stack.Push(menu);
+                        line_call_stack.Push(line);
+                        ((Displayable)menu.properties![line]).called!();
+                        menu = (Displayable)menu_call_stack.Pop();
+                        header = get_header();
+                        line = line_call_stack.Pop();
+                    }
+                    if (((Displayable)menu.properties![line]).called == null)
                     {
                         menu_call_stack.Push(menu);
                         line_call_stack.Push(line);
@@ -231,8 +252,51 @@ namespace Program
                     Continue = false;
                 }
             } while (Continue);
+        }
+        public static void Edit_or_Add_more_data(object data)
+        { 
+            //edit or add more data
+        }
+        static void Main(string[] args)
+        {
+            setting_margo = Console.WindowWidth/2;
+            setting_rows = Console.WindowHeight - 1;
+            
+            Displayable menu = new Displayable("Main", properties: new List<object>{});
+        }
 
-
+    }
+    class Classes : Displayable
+    {
+        //key: name, value: shorted name
+        public new OrderedDictionary properties = new OrderedDictionary();
+        public void Add(object name, object shorted_name)
+        {
+            properties.Add(name, shorted_name);
+        }
+        public void AddRange(List<pairs> pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                properties.Add(pair.string1, pair.string2);
+            }
+        }
+        public Classes(string name, List<object> properties) : base(name)
+        {
+            this.properties = new OrderedDictionary();
+            foreach (var item in properties)
+            {
+                this.properties.Add(((Iname)item).name, ((Iname)item).name);
+            }
+        }
+    }
+    class pairs{
+        public object string1;
+        public object string2;
+        public pairs(object string1, object string2)
+        {
+            this.string1 = string1;
+            this.string2 = string2;
         }
     }
     /// <summary>
@@ -242,9 +306,9 @@ namespace Program
     {
         // solve case when multiple subjects have the same data. How can I have different values for the same data.traits?
         public string name { get; set; }
-        public Classes classes;
-        public new List<object>? properties { get; set; }
-        public Action called { get; set; }
+        public Classes classes { get; set; }
+        public  List<object>? properties { get; set; }
+        public  Action? called { get; set; }
 
         public DataDisplayable clone()
         {
@@ -263,23 +327,6 @@ namespace Program
         }
     }
     // OLD CLASSES BELOW
-    class Classes : Idisplayable
-    {
-        public string name { get; set; }
-        public List<object>? properties { get; set; }
-        public Action? called { get; set; }
-        public Classes? classes { get; set; }
-        
-        public OrderedDictionary? Class_properties { get; set; }
-        //if Action is null, then the class has a custom action
-        public Classes(string name, Action? called = null, List<object>? properties = null)
-        {
-            this.name = name;
-            this.called = called;
-            this.properties = properties;
-        }
-        public Classes menu = new Classes("menu", properties: new List<object>{"menu"});
-    }
     class Menu
     {
         public enum menu_enter_type
@@ -310,7 +357,7 @@ namespace Program
             }
         }
     }
-
+    // currently being replaced by program class
     class main
     {
         #region 
