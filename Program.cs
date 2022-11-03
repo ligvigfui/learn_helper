@@ -46,7 +46,7 @@ namespace Program
             new ConsoleColorExtension("selected", ConsoleColor.Black, ConsoleColor.White), new ConsoleColorExtension("container", ConsoleColor.Cyan, ConsoleColor.Black),
             new ConsoleColorExtension("info", ConsoleColor.DarkGray, ConsoleColor.Black), new ConsoleColorExtension("default", ConsoleColor.White, ConsoleColor.Black)};
     }
-    class MenuDisplayable : Idisplayable{
+    class Displayable : Idisplayable{
         public string name {get; set;}
         // can conrtain other displayables or list of strings
         public List<object>? properties {get; set;}
@@ -54,7 +54,7 @@ namespace Program
         public Classes? classes {get; set;}
         public void Add(object property){
             if (called == null){
-                throw new Exception("MenuDisplayable must have a called function before adding properties");
+                throw new Exception("Displayable must have a called function before adding properties");
             }
             if(properties == null){
                 properties = new List<object>();
@@ -63,22 +63,25 @@ namespace Program
         }
         public void AddRange(List<object> properties){
             if (called == null){
-                throw new Exception("MenuDisplayable must have a called function before adding properties");
+                throw new Exception("Displayable must have a called function before adding properties");
             }
             if(properties == null){
                 properties = new List<object>();
             }
             properties.AddRange(properties);
         }
-        public MenuDisplayable(string name, Action? called = null, List<object>? properties = null){
+        public void AddAction(Action action){
+            called = action;
+        }
+        public Displayable(string name, Action? called = null, List<object>? properties = null){
             this.name = name;
             this.called = called;
             this.properties = properties;
         }
-        public MenuDisplayable(string name){
+        public Displayable(string name){
             this.name = name;
         }
-        public MenuDisplayable(string name, Action called){
+        public Displayable(string name, Action called){
             this.name = name;
             this.called = () => called();
         }
@@ -86,12 +89,11 @@ namespace Program
     class Program
     {
         static int line, selection_start;
-        static int setting_rows;
+        static int setting_rows, setting_margo;
         static string header = "";
         static ConsoleKeyInfo keyInfo;
         static Random random = new Random();
         static Stack<Idisplayable> menu_call_stack = new Stack<Idisplayable>();
-        static Stack<string> name_call_stack = new Stack<string>();
         static Stack<int> line_call_stack = new Stack<int>();
         public static void Write(params object[] oo)
         {
@@ -122,20 +124,33 @@ namespace Program
                 no_action_down(menus);
             }
         }*/
-        public static void display_menu(MenuDisplayable menu)
+        public static void display_menu(Displayable menu)
         {
             if (menu.properties == null)
             {
-                throw new Exception("MenuDisplayable must have properties before displaying");
+                throw new Exception("Displayable must have properties before displaying");
             }
             else
             {
                 display_menu_for_the_3rd_time_ffs(menu);
             }
         }
-        private static void display_menu_for_the_3rd_time_ffs(MenuDisplayable menu)
+        private static string get_header()
         {
-            header = header + "> " + menu.name;
+            string header = "";
+            foreach (var item in menu_call_stack)
+            {
+                header += item.name + " > ";
+            }
+            if (header.Length > setting_margo)
+            {
+                header = "..." + header.Substring(header.Length - setting_margo-3);
+            }
+            return header;
+        }
+        private static void display_menu_for_the_3rd_time_ffs(Displayable menu)
+        {
+            header = get_header();
             line = 0;
             selection_start = 0;
             bool Continue = true;
@@ -201,14 +216,13 @@ namespace Program
                 }
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    if (menu.properties![line] is MenuDisplayable)
+                    if (menu.properties![line] is Displayable)
                     {
                         menu_call_stack.Push(menu);
-                        name_call_stack.Push(header);
                         line_call_stack.Push(line);
-                        display_menu_for_the_3rd_time_ffs((MenuDisplayable)menu.properties[line]);
-                        menu = (MenuDisplayable)menu_call_stack.Pop();
-                        header = name_call_stack.Pop();
+                        display_menu_for_the_3rd_time_ffs((Displayable)menu.properties[line]);
+                        menu = (Displayable)menu_call_stack.Pop();
+                        header = get_header();
                         line = line_call_stack.Pop();
                     }
                 }
@@ -503,28 +517,5 @@ namespace Program
                 else Console.Write(o.ToString());
         }
     }
-        //color parts of the console
         // 12-13 perc, 22-23 perc, 37-38, 76-77
-
-        /*
-        TODO:
-        !!!!github repo setup
-        !make data types configurable runtime instead of compile time
-        !!add data
-        !veiw data
-            sort data alphabeticaly
-        -functioning menu
-        !save and load data
-            save when modiffied
-            load at start
-            - unload data
-        --generate questions automaticly
-        --- same data different weight for data_logic for different subjects
-        ---- always on top, limit time you can use your PC
-        ---- sounds for the controlls
-        ---- multiple languange packs
-        ---- 
-
-
-        */
 }
