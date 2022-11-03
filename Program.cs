@@ -24,7 +24,7 @@ namespace Program
     }
     interface Idisplayable : Iname{
         List<object>? properties {get; set;}
-        Action? called {get; set;}
+        Action? called {get; set;} 
         Classes? classes {get; set;}
     }
     interface Idisplayable<T> : Iname{
