@@ -73,6 +73,10 @@ namespace Program
         public void AddAction(Action action){
             called = action;
         }
+        public static void chose_from_list(List<object> list)
+        {
+            
+        }
         public Displayable(string name, Action? called = null, List<object>? properties = null){
             this.name = name;
             this.called = called;
@@ -261,7 +265,7 @@ namespace Program
         {
             setting_margo = Console.WindowWidth/2;
             setting_rows = Console.WindowHeight - 1;
-            
+
             Displayable menu = new Displayable("Main", properties: new List<object>{});
         }
 
