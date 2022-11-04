@@ -30,3 +30,4 @@
 * multiple languange packs
 * way to update the project after release
 * server for peaple to upload and download projects
+* classes class: fileds can only take: (string, int, displayable as classes x or list<T> where T is any of the above) as parameters.
