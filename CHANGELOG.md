@@ -18,11 +18,15 @@
 * create a way to save and load data
     * save when modiffied
     * load at start
-**Priority 2:**
     * unload data
+
+**Priority 2:**
 * generate questions automaticly
 * same data different weight for data_logic for different subjects
+
 **Priority 3:**
 * always on top, limit time you can use your PC
 * sounds for the controlls
 * multiple languange packs
+* way to update the project after release
+* server for peaple to upload and download projects
