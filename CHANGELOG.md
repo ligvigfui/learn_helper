@@ -1,14 +1,21 @@
 ## 0.1.0 
 
-#### New features
-
 ##### (2022.11.05)
+
+#### New features
 * ConsolColorExtension is now Displayable
 * Started to set up the new Main menu
 * Deleted old code
 * Made types configurable runtime (so you can break the program)
 
+###### Known bugs
+* pauses program every line (intended should be fixed in next version)
+* console not cleared
+* last entry is not accessable
+
 ##### (2022.11.03)
+
+#### New features
 * uploaded the whole project to github repo
 * Updated the Classes class
 * Added CHANGELOG.md
