@@ -1,5 +1,14 @@
-## 0.1.0 (2022.11.03)
+## 0.1.0 
+
 #### New features
+
+##### (2022.11.05)
+* ConsolColorExtension is now Displayable
+* Started to set up the new Main menu
+* Deleted old code
+* Made types configurable runtime (so you can break the program)
+
+##### (2022.11.03)
 * uploaded the whole project to github repo
 * Updated the Classes class
 * Added CHANGELOG.md
