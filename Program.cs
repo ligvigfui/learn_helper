@@ -253,7 +253,6 @@ namespace Program
                 Console.WriteLine(menu_display[0]);
                 for (int i = 1; i < menu_display.Count() ; i++)
                 {
-                    keyInfo = Console.ReadKey(true);
                     if (menu_display[i] is null) throw new NullReferenceException("menu_display[i] is null");
                     if (i == line - selection_start)
                     {

@@ -1,17 +1,25 @@
 ## 0.1.0 
 
+##### (2022.11.06)
+
+###### Bugs
+* (B3) Fixed: pause every line
+* (B1) Updated: Identified the cause of the bug: last entry is not acessable
+* (B4) Identified: selected line colors the whole line not just the word as it's supposed to
+
+
 ##### (2022.11.05)
 
-#### New features
+###### New features
 * ConsolColorExtension is now Displayable
 * Started to set up the new Main menu
 * Deleted old code
 * Made types configurable runtime (so you can break the program)
 
 ###### Known bugs
-* pauses program every line (intended should be fixed in next version)
-* console not cleared
-* last entry is not accessable
+* (B3) pauses program every line (intended should be fixed in next version)
+* (B2) console not cleared
+* (B1) last entry is not accessable
 
 ##### (2022.11.03)
 
