@@ -36,9 +36,11 @@ namespace Program
     /// <br>.properties[1] = ConsoleColor backgroud </br>
     /// </summary>
     class ConsoleColorExtension : Displayable{
+        public static Dictionary<string, ConsoleColorExtension> colors = new Dictionary<string, ConsoleColorExtension>();
         public ConsoleColorExtension(string name, ConsoleColor foreground, ConsoleColor background) : base(name)
         {
             this.properties = new List<object>(){foreground, background};
+            colors.Add(name, this);
         }
     }
     class Displayable : Idisplayable{
@@ -93,6 +95,7 @@ namespace Program
         /// <br>shortened name should be unique and not longer than 3 characters</br>
         /// </summary>
         public new OrderedDictionary? properties;
+        public bool opens_in_line = false;
         public ConsoleColorExtension? color;
         public static Dictionary<string, Classes> classes_list = new Dictionary<string, Classes>();
         /// <summary>
@@ -168,8 +171,6 @@ namespace Program
         static Random random = new Random();
         static Stack<Idisplayable> menu_call_stack = new Stack<Idisplayable>();
         static Stack<int> line_call_stack = new Stack<int>();
-        // this starting value will go out of scope before the first call of the menu
-        public static ConsoleColorExtension selected_color = new ConsoleColorExtension("selected", ConsoleColor.Black, ConsoleColor.White);
         public static void Write_list(List<object> list){
             foreach (var item in list)
             { 
@@ -183,7 +184,7 @@ namespace Program
         public static void Write(params object[] oo)
         {
             foreach (var o in oo)
-                if (o is ConsoleColorExtension) selected_color = (ConsoleColorExtension)o;
+                if (o is ConsoleColorExtension) SetColor((ConsoleColorExtension)o);
                 else Console.Write(o.ToString());
         }
         public static void clear_and_reset_color()
@@ -214,21 +215,22 @@ namespace Program
         {
             if (menu.properties == null) throw new Exception("You souldn't be here > display_menu > menu.properties == null");
             header = get_header(menu);
-            line = 0;
+            line = 1;
             selection_start = 0;
             bool Continue = true;
-            object[] menu_display = new object[setting_rows > menu.properties!.Count+1 ? menu.properties!.Count+1 : setting_rows];
+            object[] menu_display;
             clear_and_reset_color();
             do
             {
                 if (setting_rows > menu.properties!.Count+1)
                 {
+                    menu_display = new object[menu.properties!.Count+1];
                     menu_display[0] = header;
                     for (int i = 1; i < menu.properties.Count+1; i++)
                     {
                         menu_display[i] = menu.properties[i-1];
                     }
-                }
+                } else menu_display = new object[setting_rows];
                 //selection bounds
                 if (line < selection_start)
                 {
@@ -249,14 +251,14 @@ namespace Program
                     }
                 }
                 //display
-                Console.ResetColor();
+                clear_and_reset_color();
                 Console.WriteLine(menu_display[0]);
                 for (int i = 1; i < menu_display.Count() ; i++)
                 {
                     if (menu_display[i] is null) throw new NullReferenceException("menu_display[i] is null");
                     if (i == line - selection_start)
                     {
-                        SetColor(selected_color);
+                        SetColor(ConsoleColorExtension.colors["Selected"]);
                     } else 
                     if (((Displayable)menu_display[i]).classes is not null) { 
                         if (((Displayable)menu_display[i]).classes!.color != null)
@@ -277,7 +279,7 @@ namespace Program
                 {
                     if (line <= 1)
                     {
-                        line = menu.properties!.Count - 1;
+                        line = menu.properties!.Count;
                     }
                     else
                     {
@@ -286,7 +288,7 @@ namespace Program
                 }
                 if (keyInfo.Key == ConsoleKey.DownArrow)
                 {
-                    if (line >= menu.properties!.Count - 1)
+                    if (line >= menu.properties!.Count)
                     {
                         line = 1;
                     }
@@ -301,28 +303,24 @@ namespace Program
                     // if class not menu then the default action is to call the edit or add function
                     if (menu.properties![line] is not Displayable)
                     {
-                        Edit_or_Add_more_data(menu.properties![line]);
-                    }
-                    if (((Displayable)menu.properties![line]).called != null)
-                    {
+                        Edit_or_Add_more_data(menu.properties![line-1]);
+                    } else {
                         menu_call_stack.Push(menu);
                         line_call_stack.Push(line);
-                        ((Displayable)menu.properties![line]).called!();
-                        menu = (Displayable)menu_call_stack.Pop();
-                        header = get_header(menu);
-                        line = line_call_stack.Pop();
-                    }
-                    if (((Displayable)menu.properties![line]).called == null)
-                    {
-                        menu_call_stack.Push(menu);
-                        line_call_stack.Push(line);
-                        display_menu((Displayable)menu.properties[line]);
+                        if (((Displayable)menu.properties![line-1]).called != null)
+                        {
+                            ((Displayable)menu.properties![line-1]).called!();
+                        }
+                        else
+                        {
+                            display_menu((Displayable)menu.properties[line-1]);
+                        }
                         menu = (Displayable)menu_call_stack.Pop();
                         header = get_header(menu);
                         line = line_call_stack.Pop();
                     }
                 }
-                if (keyInfo.Key == ConsoleKey.Escape)
+                else if (keyInfo.Key == ConsoleKey.Escape)
                 {
                     Continue = false;
                 }
@@ -360,6 +358,7 @@ namespace Program
                     new Displayable("Colors", properties: new List<object>{
                         new ConsoleColorExtension("Menu", ConsoleColor.White, ConsoleColor.Black),
                         new ConsoleColorExtension("Selected", ConsoleColor.Black, ConsoleColor.White),
+                        new ConsoleColorExtension("Option selected", ConsoleColor.Red, ConsoleColor.Black),
                         new ConsoleColorExtension("Info", ConsoleColor.DarkGray, ConsoleColor.Black),
                         new ConsoleColorExtension("Container", ConsoleColor.Cyan, ConsoleColor.Black),
                         new ConsoleColorExtension("Data", ConsoleColor.Green, ConsoleColor.Black)
@@ -383,8 +382,8 @@ namespace Program
             ((Displayable)((Displayable)menu.properties![1]).properties![0]).properties![0] as ConsoleColorExtension;
             //setup the menu fields for each menu
             setup_initial_manus(menu, ((Classes)((Displayable)((Displayable)menu.properties![1]).properties![1]).properties![0]));
+
             bool Continue = true;
-            selected_color = ((ConsoleColorExtension)((Displayable)((Displayable)menu.properties![1]).properties![0]).properties![1]);
             Console.WriteLine("Welcome to Ligvigfui's GYTK learning software! v1.0.0");
             do {
                 display_menu(menu);
