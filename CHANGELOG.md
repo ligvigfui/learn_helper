@@ -1,5 +1,10 @@
 ## 0.1.0 
 
+#### (2022-11-07)
+
+###### New features
+* reintroduced the colors dictionary for easier use of colors
+
 ##### (2022.11.06)
 
 ###### Bugs
@@ -31,6 +36,8 @@
 
 ## Todo list for myself
 **Priority 1:**
+* second "display" on the right side of the screen
+* 
 * make data types configurable runtime instead of compile time
 * create a way to add data
     * list every class key first
@@ -38,7 +45,6 @@
                   then list every null class key in the bottom
 * create a way to veiw data
     * Alphabetically
-    * on the right as a secund "display"
 * create a way to save and load data
     * save when modiffied
     * load at start
@@ -55,3 +61,4 @@
 * way to update the project after release
 * server for peaple to upload and download projects
 * classes class: fileds can only take: (string, int, displayable as classes x or list&lt;T&gt; where T is any of the above) as parameters.
+* check that consolecolor.reset() is used everywhere instead of CCE.colors["default"]
