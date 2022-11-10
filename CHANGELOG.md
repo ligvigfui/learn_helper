@@ -1,5 +1,9 @@
 ## 0.1.0 
 
+#### (2022-11-11)
+
+* wrote half of the add or modify function
+
 #### (2022-11-07)
 
 ###### New features

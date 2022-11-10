@@ -326,9 +326,222 @@ namespace Program
                 }
             } while (Continue);
         }
-        public static void Edit_or_Add_more_data(object data)
+        static void Edit_or_Add_more_data(object data)
         { 
+            int column = 0;
+            bool Continue = true;
+            string[] options = new string[3] {"Add", "Edit" , "Remove"};
+            Console.ResetColor(); Console.WriteLine();
+            Console.SetCursorPosition(0, setting_rows + 1);
+            do {
+                Write(column == 0 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[0] , ConsoleColorExtension.colors["Default"] , "\t|\t" 
+                , column == 1 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[1], ConsoleColorExtension.colors["Default"], "\t|\t"
+                , column == 2 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[2], ConsoleColorExtension.colors["Default"]);
+                keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.LeftArrow)
+                {
+                    if (column <= 0)
+                    {
+                        column = options.Count() - 1;
+                    }
+                    else
+                    {
+                        column--;
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.RightArrow)
+                {
+                    if (column >= options.Count() - 1)
+                    {
+                        column = 0;
+                    }
+                    else
+                    {
+                        column++;
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.Enter) {
+                    if (column == 0)
+                    {
+                        Above_or_below(data);
+                    }
+                    else if (column == 1)
+                    {
+                        Edit_data(data);
+                    }
+                    else if (column == 2)
+                    {
+                        Remove_data(data);
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.A || keyInfo.Key == ConsoleKey.OemPlus)
+                {
+                    Above_or_below(data);
+                }
+                if (keyInfo.Key == ConsoleKey.E)
+                {
+                    Edit_data(data);
+                }
+                if (keyInfo.Key == ConsoleKey.R || keyInfo.Key == ConsoleKey.Delete || keyInfo.Key == ConsoleKey.OemMinus)
+                {
+                    Remove_data(data);
+                }                
+                else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    Continue = false;
+                }
+            } while (Continue);
             //edit or add more data
+        }
+        static void Above_or_below(object data) 
+        { 
+            int column = 0;
+            bool Continue = true;
+            string[] options = new string[2] {"Above", "Below"};
+            Console.ResetColor(); Console.WriteLine();
+            Console.SetCursorPosition(0, setting_rows + 1);
+            do {
+                Write(column == 0 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[0] , ConsoleColorExtension.colors["Default"] , "\t|\t" 
+                , column == 1 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[1], ConsoleColorExtension.colors["Default"]);
+                keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.LeftArrow)
+                {
+                    if (column == 0)
+                    {
+                        column = options.Count() - 1;
+                    }
+                    else
+                    {
+                        column--;
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.RightArrow)
+                {
+                    if (column == options.Count() - 1)
+                    {
+                        column = 0;
+                    }
+                    else
+                    {
+                        column++;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter) {
+                    if (column == 0)
+                    {
+                        Add_data(data, true);
+                        Continue = false;
+                    }
+                    else if (column == 1)
+                    {
+                        Add_data(data, false);
+                        Continue = false;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.A || keyInfo.Key == ConsoleKey.OemPlus)
+                {
+                    Add_data(data, true);
+                    Continue = false;
+                }
+                else if (keyInfo.Key == ConsoleKey.B || keyInfo.Key == ConsoleKey.OemMinus)
+                {
+                    Add_data(data, false);
+                    Continue = false;
+                }                
+                else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    Continue = false;
+                }
+            } while (Continue);
+            //add above or below
+        }
+        static void As_property(object data)
+        {
+            int column = 0;
+            bool Continue = true;
+            string[] options = new string[2] {"As Property", "As part of the List"};
+            Console.ResetColor(); Console.WriteLine();
+            Console.SetCursorPosition(0, setting_rows + 1);
+            do {
+                Write(column == 0 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[0] , ConsoleColorExtension.colors["Default"] , "\t|\t" 
+                , column == 1 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[1], ConsoleColorExtension.colors["Default"]);
+                keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.LeftArrow)
+                {
+                    if (column == 0)
+                    {
+                        column = options.Count() - 1;
+                    }
+                    else
+                    {
+                        column--;
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.RightArrow)
+                {
+                    if (column == options.Count() - 1)
+                    {
+                        column = 0;
+                    }
+                    else
+                    {
+                        column++;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter) {
+                    if (column == 0)
+                    {
+                        Add_data(data, true);
+                        Continue = false;
+                    }
+                    else if (column == 1)
+                    {
+                        Add_data(data, false);
+                        Continue = false;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.P)
+                {
+                    Add_data(data, true);
+                    Continue = false;
+                }
+                else if (keyInfo.Key == ConsoleKey.L)
+                {
+                    Add_data(data, false);
+                    Continue = false;
+                }                
+                else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    Continue = false;
+                }
+            } while (Continue);
+            //add above or below
+        }
+        static void Add_data(object data, bool above)
+        {
+            clear_and_reset_color();
+
+            //add data
+        }
+        static void Edit_data(object data)
+        {
+            //edit data
+        }
+        static void Remove_data(object data)
+        {
+            //remove data
+        }
+
+        //useless?
+        static ConsoleColorExtension selected(object number, object number2){
+            if (Convert.ToInt32(number) == Convert.ToInt32(number2))
+            {
+                return ConsoleColorExtension.colors["Selected"];
+            }
+            else
+            {
+                return ConsoleColorExtension.colors["Default"];
+            }
         }
         public static void setup_initial_manus(Displayable menu, Classes _class)
         {
