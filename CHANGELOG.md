@@ -39,16 +39,19 @@
 * Moved the TODO list from Program.cs the end of the CHANGELOG.md
 
 ## Todo list for myself
+**In progress**
+* make data types configurable runtime instead of compile time
+
+
 **Priority 1:**
 * second "display" on the right side of the screen
-* 
-* make data types configurable runtime instead of compile time
 * create a way to add data
     * list every class key first
     * **Prioritiy 2:** list every not null class key in the first group
                   then list every null class key in the bottom
 * create a way to veiw data
     * Alphabetically
+    * Displayable bool in_line_open
 * create a way to save and load data
     * save when modiffied
     * load at start
@@ -56,6 +59,7 @@
 
 **Priority 2:**
 * generate questions automaticly
+* Adding colors and menus
 * same data different weight for data_logic for different subjects
 
 **Priority 3:**

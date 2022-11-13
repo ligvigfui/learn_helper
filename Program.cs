@@ -520,7 +520,7 @@ namespace Program
         static void Add_data(object data, bool above)
         {
             clear_and_reset_color();
-
+            
             //add data
         }
         static void Edit_data(object data)
