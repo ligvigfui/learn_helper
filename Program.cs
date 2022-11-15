@@ -162,6 +162,18 @@ namespace Program
             this.object2 = object2;
         }
     }
+    //FIXME: not jet implemented
+    class Controll : Displayable{
+        //properties contain one controll's key's
+        //console key converted to string with Modifiers
+        //if key == something in dictionary then do the action corresponding to that key
+        public static Dictionary<string, Controll> controlls = new Dictionary<string, Controll>();
+        public Controll(string name) : base(name)
+        {
+            controlls.Add(name, this);
+        }
+
+    }
     class Program
     {
         static int line = 1, selection_start;
@@ -286,7 +298,7 @@ namespace Program
                         line--;
                     }
                 }
-                if (keyInfo.Key == ConsoleKey.DownArrow)
+                else if (keyInfo.Key == ConsoleKey.DownArrow)
                 {
                     if (line >= menu.properties!.Count)
                     {
@@ -297,13 +309,33 @@ namespace Program
                         line++;
                     }
                 }
-                if (keyInfo.Key == ConsoleKey.Enter)
+                else if (keyInfo.Key == ConsoleKey.RightArrow){
+                    //TODO: LINE IS 99%> PROPERTIES COUNT
+                    if (menu.properties![line] is not Displayable) continue;
+                    menu_call_stack.Push(menu);
+                    line_call_stack.Push(line);
+                    if (((Displayable)menu.properties![line-1]).called != null)
+                    {
+                        ((Displayable)menu.properties![line-1]).called!();
+                    }
+                    else
+                    {
+                        display_menu((Displayable)menu.properties[line-1]);
+                    }
+                    menu = (Displayable)menu_call_stack.Pop();
+                    header = get_header(menu);
+                    line = line_call_stack.Pop();
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter)
                 {
+                    //FIXME: 2 comments below are fucking stupid. Definitly not inntended behaviour
                     // if class is menu then the default action is to display the menu
                     // if class not menu then the default action is to call the edit or add function
                     if (menu.properties![line] is not Displayable)
                     {
-                        Edit_or_Add_more_data(menu.properties![line-1]);
+                        //FIXME: index fucked!!!!!!!!!
+                        //FIXME: open / enter lists with right arrow
+                        Edit_or_Add_more_data(menu, menu.properties.FindIndex(x => x == menu.properties![line]));
                     } else {
                         menu_call_stack.Push(menu);
                         line_call_stack.Push(line);
@@ -326,7 +358,7 @@ namespace Program
                 }
             } while (Continue);
         }
-        static void Edit_or_Add_more_data(object data)
+        static void Edit_or_Add_more_data(Displayable father, int index)
         { 
             int column = 0;
             bool Continue = true;
@@ -363,7 +395,7 @@ namespace Program
                 if (keyInfo.Key == ConsoleKey.Enter) {
                     if (column == 0)
                     {
-                        Above_or_below(data);
+                        As_property(father, index);
                     }
                     else if (column == 1)
                     {
@@ -376,7 +408,7 @@ namespace Program
                 }
                 if (keyInfo.Key == ConsoleKey.A || keyInfo.Key == ConsoleKey.OemPlus)
                 {
-                    Above_or_below(data);
+                    As_property(data);
                 }
                 if (keyInfo.Key == ConsoleKey.E)
                 {
@@ -393,69 +425,7 @@ namespace Program
             } while (Continue);
             //edit or add more data
         }
-        static void Above_or_below(object data) 
-        { 
-            int column = 0;
-            bool Continue = true;
-            string[] options = new string[2] {"Above", "Below"};
-            Console.ResetColor(); Console.WriteLine();
-            Console.SetCursorPosition(0, setting_rows + 1);
-            do {
-                Write(column == 0 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[0] , ConsoleColorExtension.colors["Default"] , "\t|\t" 
-                , column == 1 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[1], ConsoleColorExtension.colors["Default"]);
-                keyInfo = Console.ReadKey(true);
-                if (keyInfo.Key == ConsoleKey.LeftArrow)
-                {
-                    if (column == 0)
-                    {
-                        column = options.Count() - 1;
-                    }
-                    else
-                    {
-                        column--;
-                    }
-                }
-                if (keyInfo.Key == ConsoleKey.RightArrow)
-                {
-                    if (column == options.Count() - 1)
-                    {
-                        column = 0;
-                    }
-                    else
-                    {
-                        column++;
-                    }
-                }
-                else if (keyInfo.Key == ConsoleKey.Enter) {
-                    if (column == 0)
-                    {
-                        Add_data(data, true);
-                        Continue = false;
-                    }
-                    else if (column == 1)
-                    {
-                        Add_data(data, false);
-                        Continue = false;
-                    }
-                }
-                else if (keyInfo.Key == ConsoleKey.A || keyInfo.Key == ConsoleKey.OemPlus)
-                {
-                    Add_data(data, true);
-                    Continue = false;
-                }
-                else if (keyInfo.Key == ConsoleKey.B || keyInfo.Key == ConsoleKey.OemMinus)
-                {
-                    Add_data(data, false);
-                    Continue = false;
-                }                
-                else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Backspace)
-                {
-                    Continue = false;
-                }
-            } while (Continue);
-            //add above or below
-        }
-        static void As_property(object data)
+        static void As_property(Displayable father, int index)
         {
             int column = 0;
             bool Continue = true;
@@ -491,21 +461,106 @@ namespace Program
                 else if (keyInfo.Key == ConsoleKey.Enter) {
                     if (column == 0)
                     {
-                        Add_data(data, true);
-                        Continue = false;
+                        //As property
+                        if (data is Displayable) { 
+                            //if properties is null then create it (null-coalescing assignment operator)
+                            ((Displayable)data).properties ??= new List<object>();
+                            ((Displayable)data).properties!.Add(Add_data());
+                            Continue = false;
+                        } else { 
+                            Write(ConsoleColorExtension.colors["Error"], "This is not a Displayable object.\n",
+                            ConsoleColorExtension.colors["Info"], "To write to this item you need to change it's type class to a Displayable one!");
+                            //TODO: implemet a way to change existing data's class
+                            keyInfo = Console.ReadKey(true);
+                        }
                     }
                     else if (column == 1)
                     {
-                        Add_data(data, false);
+                        //As part of the List
+                        Above_or_below(data);
                         Continue = false;
                     }
                 }
                 else if (keyInfo.Key == ConsoleKey.P)
                 {
+                    if (data is Displayable) { 
+                        //if properties is null then create it (null-coalescing assignment operator)
+                        ((Displayable)data).properties ??= new List<object>();
+                        ((Displayable)data).properties!.Add(Add_data());
+                        Continue = false;
+                    } else { 
+                        Write(ConsoleColorExtension.colors["Error"], "This is not a Displayable object.\n",
+                        ConsoleColorExtension.colors["Info"], "To write to this item you need to change it's type class to a Displayable one!");
+                        //TODO: implemet a way to change existing data's class
+                        keyInfo = Console.ReadKey(true);
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.L)
+                {
+                    Above_or_below(data);
+                    Continue = false;
+                }                
+                else if (keyInfo.Key == ConsoleKey.Escape || keyInfo.Key == ConsoleKey.Backspace)
+                {
+                    Continue = false;
+                }
+            } while (Continue);
+            //add as property or as part of the list
+        }
+        static void Above_or_below(Displayable father, int index) 
+        { 
+            int column = 0;
+            bool Continue = true;
+            string[] options = new string[2] {"Above", "Below"};
+            Console.ResetColor(); Console.WriteLine();
+            Console.SetCursorPosition(0, setting_rows + 1);
+            do {
+                Write(column == 0 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[0] , ConsoleColorExtension.colors["Default"] , "\t|\t" 
+                , column == 1 ? ConsoleColorExtension.colors["Selected"] : ConsoleColorExtension.colors["Default"], options[1], ConsoleColorExtension.colors["Default"]);
+                keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.LeftArrow)
+                {
+                    if (column == 0)
+                    {
+                        column = options.Count() - 1;
+                    }
+                    else
+                    {
+                        column--;
+                    }
+                }
+                if (keyInfo.Key == ConsoleKey.RightArrow)
+                {
+                    if (column == options.Count() - 1)
+                    {
+                        column = 0;
+                    }
+                    else
+                    {
+                        column++;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.Enter) {
+                    if (column == 0)
+                    {
+                        //Above
+                        //<v>
+                        Add_data(data, true);
+                        Continue = false;
+                    }
+                    else if (column == 1)
+                    {
+                        //Below
+                        Add_data(data, false);
+                        Continue = false;
+                    }
+                }
+                else if (keyInfo.Key == ConsoleKey.A || keyInfo.Key == ConsoleKey.OemPlus)
+                {
                     Add_data(data, true);
                     Continue = false;
                 }
-                else if (keyInfo.Key == ConsoleKey.L)
+                else if (keyInfo.Key == ConsoleKey.B || keyInfo.Key == ConsoleKey.OemMinus)
                 {
                     Add_data(data, false);
                     Continue = false;
@@ -517,10 +572,12 @@ namespace Program
             } while (Continue);
             //add above or below
         }
-        static void Add_data(object data, bool above)
+        static object Add_data()
         {
+            //return an object for exaple a string filled or a Displayable with .name and .classes filled
+            object new_data = null;
             clear_and_reset_color();
-            
+            return new_data;
             //add data
         }
         static void Edit_data(object data)
@@ -571,8 +628,8 @@ namespace Program
                     new Displayable("Colors", properties: new List<object>{
                         new ConsoleColorExtension("Menu", ConsoleColor.White, ConsoleColor.Black),
                         new ConsoleColorExtension("Selected", ConsoleColor.Black, ConsoleColor.White),
-                        new ConsoleColorExtension("Option selected", ConsoleColor.Red, ConsoleColor.Black),
                         new ConsoleColorExtension("Info", ConsoleColor.DarkGray, ConsoleColor.Black),
+                        new ConsoleColorExtension("Error", ConsoleColor.Red, ConsoleColor.Black),
                         new ConsoleColorExtension("Container", ConsoleColor.Cyan, ConsoleColor.Black),
                         new ConsoleColorExtension("Data", ConsoleColor.Green, ConsoleColor.Black)
                     }),

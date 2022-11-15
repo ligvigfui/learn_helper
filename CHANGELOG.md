@@ -1,10 +1,22 @@
 ## 0.1.0 
 
-#### (2022-11-11)
+### Current known bugs:
+* **(B4)** whole selected line is colord not just the text
+* **(B5)** IndexError in half the code
+
+##### (2022-11-14)
+
+###### New code
+* worked on Add_data method
+
+###### Bugs
+* **(B5)** Identified: options later in the line couse an IndexError. Thats becouse I passed line as an index where it should be a line - (Dispalyable)father.line 
+
+##### (2022-11-11)
 
 * wrote half of the add or modify function
 
-#### (2022-11-07)
+##### (2022-11-07)
 
 ###### New features
 * reintroduced the colors dictionary for easier use of colors
@@ -12,9 +24,9 @@
 ##### (2022.11.06)
 
 ###### Bugs
-* (B3) Fixed: pause every line
-* (B1) Updated: Identified the cause of the bug: last entry is not acessable
-* (B4) Identified: selected line colors the whole line not just the word as it's supposed to
+* **(B3)** Fixed: pause every line
+* **(B1)** Updated: Identified the cause of the bug: last entry is not acessable
+* **(B4)** Identified: selected line colors the whole line not just the word as it's supposed to
 
 
 ##### (2022.11.05)
@@ -26,9 +38,9 @@
 * Made types configurable runtime (so you can break the program)
 
 ###### Known bugs
-* (B3) pauses program every line (intended should be fixed in next version)
-* (B2) console not cleared
-* (B1) last entry is not accessable
+* **(B3)** pauses program every line (intended should be fixed in next version)
+* **(B2)** console not cleared
+* **(B1)** last entry is not accessable
 
 ##### (2022.11.03)
 
@@ -40,6 +52,7 @@
 
 ## Todo list for myself
 **In progress**
+* Add_data pass father and inxed as parameters (so i can insert above or below)
 * make data types configurable runtime instead of compile time
 
 
@@ -58,11 +71,16 @@
     * unload data
 
 **Priority 2:**
+* secundary sorting options for data
 * generate questions automaticly
 * Adding colors and menus
+* make the connections of a graph be the data_logic
 * same data different weight for data_logic for different subjects
 
 **Priority 3:**
+* create customisable controlls
+* rewrite the whole thing with switch statements instead of if statements
+* make the program unbreakable again but withouth losing functionality
 * always on top, limit time you can use your PC
 * sounds for the controlls
 * multiple languange packs
