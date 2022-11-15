@@ -1,8 +1,14 @@
 ## 0.1.0 
 
-### Current known bugs:
+#### Current known bugs:
 * **(B4)** whole selected line is colord not just the text
 * **(B5)** IndexError in half the code
+
+##### (2022-11-15)
+
+* Made TODO list it's own file
+* Modified TODO list
+* **FROM NOW ON TODO LIST CHANGES ARE NOT INCLUDED IN CHAINLOG**
 
 ##### (2022-11-14)
 
@@ -44,47 +50,8 @@
 
 ##### (2022.11.03)
 
-#### New features
+###### New features
 * uploaded the whole project to github repo
 * Updated the Classes class
 * Added CHANGELOG.md
 * Moved the TODO list from Program.cs the end of the CHANGELOG.md
-
-## Todo list for myself
-**In progress**
-* Add_data pass father and inxed as parameters (so i can insert above or below)
-* make data types configurable runtime instead of compile time
-
-
-**Priority 1:**
-* second "display" on the right side of the screen
-* create a way to add data
-    * list every class key first
-    * **Prioritiy 2:** list every not null class key in the first group
-                  then list every null class key in the bottom
-* create a way to veiw data
-    * Alphabetically
-    * Displayable bool in_line_open
-* create a way to save and load data
-    * save when modiffied
-    * load at start
-    * unload data
-
-**Priority 2:**
-* secundary sorting options for data
-* generate questions automaticly
-* Adding colors and menus
-* make the connections of a graph be the data_logic
-* same data different weight for data_logic for different subjects
-
-**Priority 3:**
-* create customisable controlls
-* rewrite the whole thing with switch statements instead of if statements
-* make the program unbreakable again but withouth losing functionality
-* always on top, limit time you can use your PC
-* sounds for the controlls
-* multiple languange packs
-* way to update the project after release
-* server for peaple to upload and download projects
-* classes class: fileds can only take: (string, int, displayable as classes x or list&lt;T&gt; where T is any of the above) as parameters.
-* check that consolecolor.reset() is used everywhere instead of CCE.colors["default"]
