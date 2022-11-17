@@ -2,7 +2,7 @@
 ## In progress
 * Add_data pass father and inxed as parameters (so i can insert above or below)
 * make data types configurable runtime instead of compile time
-
+* Display menu function: dont include the header in the object array
 
 ## Priority 1:
 * create a way to add data
