@@ -4,6 +4,10 @@
 * **(B4)** whole selected line is colord not just the text
 * **(B5)** IndexError in half the code
 
+##### (2022-11-19)
+
+* Moved TODO list to github like a true professional.
+
 ##### (2022-11-15)
 
 * Made TODO list it's own file
